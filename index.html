@@ -336,7 +336,7 @@ tr:hover td{background:var(--bg2)}
     </div>
     <div class="card"><div class="tbl-wrap">
       <table>
-        <thead><tr><th>Nome</th><th>Endereço</th><th>Responsável</th><th>Status</th><th>Orçamento</th><th>Gasto (recebido)</th><th>%</th><th>Ações</th></tr></thead>
+        <thead><tr><th>Nome</th><th>Endereço</th><th>Responsável</th><th>Status</th><th>Orçamento</th><th>Total gasto</th><th>%</th><th>Ações</th></tr></thead>
         <tbody id="tbody-obras"></tbody>
       </table>
     </div></div>
@@ -903,7 +903,9 @@ function renderRelatorios(){
 function renderObras(){
   const tb=document.getElementById('tbody-obras');
   tb.innerHTML=obras.map((o,idx)=>{
-    const gasto=pedidos.filter(p=>p.obra===o.nome&&p.status==='Recebido').reduce((a,p)=>a+p.qtd*p.vl,0);
+    const gastosObra=pedidos.filter(p=>p.obra===o.nome);
+    const gasto=gastosObra.reduce((a,p)=>a+p.qtd*p.vl,0);
+    const gastoRecebido=gastosObra.filter(p=>p.status==='Recebido').reduce((a,p)=>a+p.qtd*p.vl,0);
     const pct=o.orc?Math.min(100,Math.round(gasto/o.orc*100)):0;
     const cor=pct>80?'#E24B4A':pct>50?'#C9A84C':'#1648A0';
     const stCl=o.status==='Em andamento'?'s-aprovado':o.status==='Concluída'?'s-recebido':o.status==='Pausada'?'s-cancelado':'s-pendente';
@@ -913,7 +915,7 @@ function renderObras(){
       <td>${o.resp||'—'}</td>
       <td><span class="status ${stCl}">${o.status}</span></td>
       <td>${fmt(o.orc)}</td>
-      <td style="font-weight:700;color:var(--azul)">${fmt(gasto)}</td>
+      <td style="font-weight:700;color:var(--azul)">${fmt(gasto)}<br><span style="font-size:11px;color:var(--txt3);font-weight:400">Recebido: ${fmt(gastoRecebido)}</span></td>
       <td><div style="display:flex;align-items:center;gap:6px">
         <div style="width:60px;height:5px;background:var(--bg2);border-radius:3px">
           <div style="height:100%;width:${pct}%;background:${cor};border-radius:3px"></div>
