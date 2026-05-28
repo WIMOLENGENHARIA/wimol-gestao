@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wimol Gestão</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --azul:#0D2B5E;--azul2:#1648A0;--azul3:#4A7FD4;--azul-light:#E6F0FB;
+  --ouro:#C9A84C;--ouro2:#E8C96A;--ouro-light:#FBF4E0;
+  --bg:#ffffff;--bg2:#f7f8fb;--bg3:#eef1f7;
+  --txt:#1a1a1a;--txt2:#555;--txt3:#999;
+  --border:rgba(13,43,94,.10);--border2:rgba(13,43,94,.22);
+  --radius:8px;--radius-lg:12px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--txt);font-size:14px;min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;width:220px;height:100vh;background:var(--azul);display:flex;flex-direction:column;z-index:50;overflow-y:auto}
+.sidebar-logo{padding:1.25rem 1rem 1rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.logo-text .brand{font-size:18px;font-weight:700;color:var(--ouro);font-family:Georgia,serif;letter-spacing:.5px}
+.logo-text .sub{font-size:9px;color:var(--azul3);letter-spacing:3px;text-transform:uppercase}
+.sidebar-section{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;padding:.75rem 1rem .25rem;margin-top:.25rem}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 1rem;cursor:pointer;font-size:13.5px;color:rgba(255,255,255,.6);transition:all .12s}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{background:rgba(201,168,76,.15);color:var(--ouro);border-left:3px solid var(--ouro);padding-left:calc(1rem - 3px)}
+.nav-item i{font-size:17px;flex-shrink:0}
+.sidebar-footer{margin-top:auto;padding:1rem;border-top:1px solid rgba(255,255,255,.07)}
+.sidebar-footer p{font-size:10.5px;color:rgba(255,255,255,.25);line-height:1.6}
+.main{margin-left:220px;padding:1.75rem;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap}
+.topbar h1{font-size:18px;font-weight:700;color:var(--azul)}
+.obra-select{display:flex;align-items:center;gap:6px;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);padding:6px 12px;font-size:13px}
+.obra-select i{font-size:15px;color:var(--azul3)}
+.obra-select select{border:none;background:transparent;font-size:13px;color:var(--txt);cursor:pointer;outline:none;font-family:inherit}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:1.5rem}
+.metric{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem;border-top:3px solid var(--ouro)}
+.metric-label{font-size:11.5px;color:var(--txt2);margin-bottom:4px}
+.metric-value{font-size:20px;font-weight:700;color:var(--azul);line-height:1.2}
+.metric-sub{font-size:11px;color:var(--txt3);margin-top:3px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);border:0.5px solid var(--border2);background:transparent;font-size:13px;cursor:pointer;color:var(--txt);font-family:inherit;transition:all .12s;white-space:nowrap}
+.btn:hover{background:var(--bg2)}
+.btn-primary{background:var(--azul);color:#fff;border-color:var(--azul)}
+.btn-primary:hover{background:#0a2247}
+.btn-pdf{background:var(--azul);color:var(--ouro);border:1px solid var(--ouro)}
+.btn-pdf:hover{background:#0a2247}
+.btn-edit{background:var(--ouro-light);color:var(--azul);border-color:var(--ouro);font-size:12px;padding:4px 10px}
+.btn-edit:hover{background:var(--ouro);color:#fff}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.section-title{font-size:15px;font-weight:700;color:var(--azul)}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:9px 14px;font-weight:700;font-size:11px;color:var(--azul);border-bottom:0.5px solid var(--border);background:var(--bg2);white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
+td{padding:10px 14px;border-bottom:0.5px solid var(--border);color:var(--txt);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg2)}
+.empty{text-align:center;padding:3rem;color:var(--txt3);font-size:13px}
+.chip{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;background:var(--azul-light);color:var(--azul2);border:0.5px solid rgba(22,72,160,.2);white-space:nowrap}
+.status{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.s-pendente{background:#FAEEDA;color:#633806}
+.s-aprovado{background:#EAF3DE;color:#27500A}
+.s-recebido{background:#E1F5EE;color:#085041}
+.s-cancelado{background:#FCEBEB;color:#791F1F}
+.tipo-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;white-space:nowrap}
+.tabs{display:flex;gap:2px;border-bottom:0.5px solid var(--border);margin-bottom:1rem}
+.tab{padding:8px 14px;font-size:13px;cursor:pointer;color:var(--txt2);border-bottom:2px solid transparent;margin-bottom:-0.5px}
+.tab.active{color:var(--azul);border-bottom-color:var(--ouro);font-weight:700}
+
+/* Filtros barra */
+.filtros-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:14px}
+.filtro-group{display:flex;flex-direction:column;gap:4px;min-width:130px;flex:1}
+.filtro-group label{font-size:10.5px;font-weight:700;color:var(--azul2);text-transform:uppercase;letter-spacing:.04em}
+.filtro-group input,.filtro-group select{font-size:12.5px;padding:6px 9px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--txt);font-family:inherit;outline:none}
+.filtro-group input:focus,.filtro-group select:focus{border-color:var(--azul2)}
+.filtros-acoes{display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+.btn-limpar{background:transparent;border:0.5px solid var(--border2);color:var(--txt2);font-size:12px;padding:6px 12px;border-radius:var(--radius);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px}
+.btn-limpar:hover{background:var(--bg2)}
+.filtros-count{font-size:12px;color:var(--txt3);align-self:flex-end;white-space:nowrap}
+
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:200;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;width:540px;max-width:100%;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:16px;font-weight:700;margin-bottom:1.25rem;color:var(--azul);display:flex;align-items:center;gap:8px}
+.modal h2 i{font-size:18px;color:var(--ouro)}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:11px;color:var(--txt2);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.form-group input,.form-group select,.form-group textarea{width:100%;font-size:13px;padding:8px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--txt);font-family:inherit;outline:none;transition:border .12s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--azul2)}
+.form-group textarea{height:65px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:0.5px solid var(--border)}
+.section-divider{font-size:10px;font-weight:700;color:var(--ouro);text-transform:uppercase;letter-spacing:.06em;margin:1rem 0 8px;padding-bottom:6px;border-bottom:1px solid var(--ouro-light)}
+.valor-total-preview{background:var(--azul-light);border:0.5px solid rgba(22,72,160,.2);border-radius:var(--radius);padding:8px 12px;font-size:13px;color:var(--azul);font-weight:700;text-align:right;margin-top:-4px}
+
+.bar-row{margin-bottom:14px}
+.bar-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+.bar-label{color:var(--txt2)}
+.bar-value{font-weight:700;color:var(--azul)}
+.bar-track{height:7px;background:var(--bg2);border-radius:4px}
+.bar-fill{height:100%;border-radius:4px}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--azul);color:var(--ouro);padding:10px 18px;border-radius:var(--radius);font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px;border:1px solid var(--ouro)}
+.toast.show{opacity:1}
+.st-sel{font-size:11px;padding:3px 5px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--bg2);color:var(--txt);cursor:pointer;font-family:inherit}
+
+@media print{
+  .sidebar,.topbar,.modal-bg,.toast,.no-print{display:none!important}
+  .main{margin-left:0!important;padding:0!important}
+  body{background:#fff}
+  #page-pedidos,#page-fornecedores,#page-materiais,#page-obras{display:none!important}
+  #page-relatorios{display:block!important}
+  .pdf-header{display:flex!important}
+  .card{border:1px solid #ccc}
+  .metrics{grid-template-columns:repeat(3,1fr)!important}
+  @page{margin:1.5cm;size:A4}
+  th{background:#eef1f7!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .metric{border-top:3px solid #C9A84C!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+.pdf-header{display:none;align-items:center;gap:14px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid var(--ouro)}
+.pdf-logo-box{width:48px;height:48px;background:var(--azul);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pdf-title{font-size:20px;font-weight:700;color:var(--azul);font-family:Georgia,serif}
+.pdf-sub{font-size:12px;color:var(--txt2)}
+.pdf-date{margin-left:auto;font-size:11px;color:var(--txt2);text-align:right;line-height:1.6}
+@media(max-width:560px){
+  .sidebar{transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;padding:1rem}
+  .mob{display:flex!important}
+}
+.mob{display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--bg);cursor:pointer;font-size:18px;color:var(--azul)}
+</style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="38" rx="7" fill="rgba(255,255,255,0.05)"/>
+        <rect x="15" y="3" width="8" height="32" fill="#1648A0" opacity="0.5"/>
+        <rect x="15" y="3" width="8" height="32" fill="none" stroke="#C9A84C" stroke-width="0.8" rx="1"/>
+        <line x1="15" y1="11" x2="23" y2="11" stroke="#C9A84C" stroke-width="0.8"/>
+        <line x1="15" y1="19" x2="23" y2="19" stroke="#C9A84C" stroke-width="0.6" opacity="0.5"/>
+        <line x1="15" y1="27" x2="23" y2="27" stroke="#C9A84C" stroke-width="0.8"/>
+        <line x1="19" y1="3" x2="6" y2="14" stroke="#C9A84C" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="19" y1="3" x2="32" y2="14" stroke="#C9A84C" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="6" y1="14" x2="6" y2="35" stroke="#C9A84C" stroke-width="0.9"/>
+        <line x1="32" y1="14" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9"/>
+        <line x1="6" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="2"/>
+        <circle cx="19" cy="3" r="2.5" fill="#C9A84C"/>
+        <circle cx="6" cy="14" r="1.8" fill="#C9A84C" opacity="0.7"/>
+        <circle cx="32" cy="14" r="1.8" fill="#C9A84C" opacity="0.7"/>
+      </svg>
+      <div class="logo-text">
+        <div class="brand">WIMOL</div>
+        <div class="sub">Gestão</div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar-section">Principal</div>
+  <div class="nav-item active" onclick="showPage('pedidos')"><i class="ti ti-receipt"></i> Gastos</div>
+  <div class="nav-item" onclick="showPage('fornecedores')"><i class="ti ti-building-store"></i> Fornecedores</div>
+  <div class="nav-item" onclick="showPage('materiais')"><i class="ti ti-packages"></i> Materiais</div>
+  <div class="sidebar-section">Gestão</div>
+  <div class="nav-item" onclick="showPage('relatorios')"><i class="ti ti-chart-bar"></i> Relatórios</div>
+  <div class="nav-item" onclick="showPage('obras')"><i class="ti ti-building"></i> Obras</div>
+  <div class="sidebar-section">Sistema</div>
+  <div class="nav-item" onclick="showPage('perfis')"><i class="ti ti-users"></i> Perfis</div>
+  <div class="nav-item" onclick="showPage('config')"><i class="ti ti-settings"></i> Configurações</div>
+  <div class="sidebar-footer"><p>Wimol Engenharia<br>e Construções<br>© 2026</p></div>
+</div>
+
+<div class="main" id="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="mob" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="ti ti-menu-2"></i></div>
+      <h1 id="page-title">Gastos</h1>
+    </div>
+    <div class="obra-select">
+      <i class="ti ti-crane"></i>
+      <select id="obra-filter" onchange="renderAll()">
+        <option value="todas">Todas as obras</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- PEDIDOS -->
+  <div id="page-pedidos">
+    <div class="metrics" id="metrics-pedidos"></div>
+
+    <!-- Barra de filtros avançados -->
+    <div class="filtros-bar no-print">
+      <div class="filtro-group" style="min-width:180px;flex:2">
+        <label><i class="ti ti-search" style="font-size:11px"></i> Buscar</label>
+        <input id="f-busca" type="text" placeholder="Material, fornecedor, obra..." oninput="aplicarFiltros()">
+      </div>
+      <div class="filtro-group">
+        <label>Tipo de material</label>
+        <select id="f-tipo" onchange="aplicarFiltros()">
+          <option value="">Todos os tipos</option>
+          <option>Estrutural</option><option>Vedação</option><option>Revestimento</option>
+          <option>Cobertura</option><option>Instalação</option><option>Acabamento</option>
+          <option>Ferragem</option><option>Impermeabilização</option><option>Equipamento</option><option>Serviço</option>
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label>Categoria</label>
+        <select id="f-cat" onchange="aplicarFiltros()">
+          <option value="">Todas</option>
+          <option>Materiais</option><option>Equipamentos</option><option>Serviços</option>
+          <option>Elétrica</option><option>Hidráulica</option><option>Acabamento</option>
+          <option>Documentação</option><option>Terreno</option><option>Documentação</option><option>Terreno</option>
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label>Status</label>
+        <select id="f-status" onchange="aplicarFiltros()">
+          <option value="">Todos</option>
+          <option>Pendente</option><option>Aprovado</option><option>Recebido</option><option>Cancelado</option>
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label>Data início</label>
+        <input id="f-dt-ini" type="date" onchange="aplicarFiltros()">
+      </div>
+      <div class="filtro-group">
+        <label>Data fim</label>
+        <input id="f-dt-fim" type="date" onchange="aplicarFiltros()">
+      </div>
+      <div class="filtros-acoes">
+        <button class="btn-limpar" onclick="limparFiltros()"><i class="ti ti-x" style="font-size:12px"></i> Limpar</button>
+      </div>
+      <div class="filtros-count" id="filtros-count"></div>
+    </div>
+
+    <div class="section-header">
+      <div style="font-size:13px;color:var(--txt2)" id="resultado-label"></div>
+      <button class="btn btn-primary" onclick="openModal('modal-pedido')"><i class="ti ti-plus"></i> Novo gasto</button>
+    </div>
+    <div class="card"><div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Nº</th><th>Obra</th><th>Fornecedor</th><th>Material</th><th>Categoria</th><th>Tipo</th><th>Qtd</th><th>Vl. Unit.</th><th>Vl. Total</th><th>Data</th><th>Status</th><th></th></tr></thead>
+        <tbody id="tbody-pedidos"></tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- FORNECEDORES -->
+  <div id="page-fornecedores" style="display:none">
+    <div class="section-header">
+      <span class="section-title">Fornecedores cadastrados</span>
+      <button class="btn btn-primary" onclick="openModal('modal-fornecedor')"><i class="ti ti-plus"></i> Novo fornecedor</button>
+    </div>
+    <div class="card"><div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Nome</th><th>CNPJ</th><th>Categoria</th><th>Contato</th><th>Telefone</th><th>E-mail</th><th>Pedidos</th></tr></thead>
+        <tbody id="tbody-fornecedores"></tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- MATERIAIS -->
+  <div id="page-materiais" style="display:none">
+    <div class="section-header">
+      <span class="section-title">Catálogo de materiais</span>
+      <button class="btn btn-primary" onclick="openModal('modal-material')"><i class="ti ti-plus"></i> Novo material</button>
+    </div>
+    <div class="card"><div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Nome</th><th>Categoria</th><th>Tipo</th><th>Unidade</th><th>Qtd. estoque</th><th>Qtd. mínima</th><th>Preço ref.</th><th>Especificação</th><th>Pedidos</th></tr></thead>
+        <tbody id="tbody-materiais"></tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- RELATÓRIOS -->
+  <div id="page-relatorios" style="display:none">
+    <div class="pdf-header" id="pdf-header">
+      <div class="pdf-logo-box">
+        <svg width="32" height="32" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="15" y="3" width="8" height="32" fill="#1648A0" opacity="0.5"/>
+          <rect x="15" y="3" width="8" height="32" fill="none" stroke="#C9A84C" stroke-width="0.8" rx="1"/>
+          <line x1="15" y1="11" x2="23" y2="11" stroke="#C9A84C" stroke-width="0.8"/>
+          <line x1="15" y1="19" x2="23" y2="19" stroke="#C9A84C" stroke-width="0.6" opacity="0.5"/>
+          <line x1="15" y1="27" x2="23" y2="27" stroke="#C9A84C" stroke-width="0.8"/>
+          <line x1="19" y1="3" x2="6" y2="14" stroke="#C9A84C" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="19" y1="3" x2="32" y2="14" stroke="#C9A84C" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="6" y1="14" x2="6" y2="35" stroke="#C9A84C" stroke-width="0.9"/>
+          <line x1="32" y1="14" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9"/>
+          <line x1="6" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="2"/>
+          <circle cx="19" cy="3" r="2.5" fill="#C9A84C"/>
+        </svg>
+      </div>
+      <div>
+        <div class="pdf-title">WIMOL Gestão</div>
+        <div class="pdf-sub">Wimol Engenharia e Construções — Relatório de Compras</div>
+      </div>
+      <div class="pdf-date" id="pdf-date"></div>
+    </div>
+    <div class="metrics" id="metrics-rel" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))"></div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap" class="no-print">
+      <button class="btn btn-pdf" onclick="gerarPDF()"><i class="ti ti-file-type-pdf"></i> Exportar PDF</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div>
+        <div class="section-header"><span class="section-title">Gastos por obra</span></div>
+        <div class="card" id="rel-obras" style="padding:1rem"></div>
+      </div>
+      <div>
+        <div class="section-header"><span class="section-title">Gastos por tipo de material</span></div>
+        <div class="card" id="rel-tipo" style="padding:1rem"></div>
+      </div>
+    </div>
+    <div style="margin-top:1rem">
+      <div class="section-header"><span class="section-title">Gastos por categoria</span></div>
+      <div class="card" id="rel-cat" style="padding:1rem"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <div class="section-header"><span class="section-title">Detalhamento de gastos</span></div>
+      <div class="card"><div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Nº</th><th>Obra</th><th>Fornecedor</th><th>Material</th><th>Tipo</th><th>Qtd</th><th>Vl. Unit.</th><th>Vl. Total</th><th>Status</th></tr></thead>
+          <tbody id="tbody-rel-pedidos"></tbody>
+        </table>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- OBRAS -->
+  <div id="page-obras" style="display:none">
+    <div class="section-header">
+      <span class="section-title">Obras cadastradas</span>
+      <button class="btn btn-primary" onclick="openModal('modal-obra')"><i class="ti ti-plus"></i> Nova obra</button>
+    </div>
+    <div class="card"><div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Nome</th><th>Endereço</th><th>Responsável</th><th>Status</th><th>Orçamento</th><th>Gasto (recebido)</th><th>%</th><th>Ações</th></tr></thead>
+        <tbody id="tbody-obras"></tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- PERFIS -->
+  <div id="page-perfis" style="display:none">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start">
+
+      <!-- Lista de perfis -->
+      <div>
+        <div class="section-header">
+          <span class="section-title">Usuários cadastrados</span>
+          <button class="btn btn-primary" onclick="openModal('modal-perfil')"><i class="ti ti-plus"></i> Novo usuário</button>
+        </div>
+        <div id="lista-perfis" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+
+      <!-- Trocar senha -->
+      <div>
+        <div class="section-header"><span class="section-title">Trocar senha</span></div>
+        <div class="card" style="padding:1.25rem">
+          <div class="form-group"><label>Usuário</label>
+            <select id="senha-usuario" style="width:100%;font-size:13px;padding:8px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--txt);font-family:inherit;outline:none"></select>
+          </div>
+          <div class="form-group"><label>Senha atual</label>
+            <input id="senha-atual" type="password" placeholder="Digite a senha atual" style="width:100%;font-size:13px;padding:8px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--txt);font-family:inherit;outline:none">
+          </div>
+          <div class="form-group"><label>Nova senha</label>
+            <input id="senha-nova" type="password" placeholder="Mínimo 4 caracteres" style="width:100%;font-size:13px;padding:8px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--txt);font-family:inherit;outline:none">
+          </div>
+          <div class="form-group"><label>Confirmar nova senha</label>
+            <input id="senha-confirma" type="password" placeholder="Repita a nova senha" style="width:100%;font-size:13px;padding:8px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--txt);font-family:inherit;outline:none">
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="trocarSenha()"><i class="ti ti-lock"></i> Atualizar senha</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- fim page-perfis -->
+
+  <!-- CONFIGURAÇÕES -->
+  <div id="page-config" style="display:none">
+
+    <div class="section-header"><span class="section-title"><i class="ti ti-building-skyscraper" style="vertical-align:-2px;margin-right:6px;color:var(--ouro)"></i>Informações da empresa</span></div>
+    <div class="card" style="padding:1.25rem;margin-bottom:1.5rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label>Nome da empresa</label><input id="cfg-empresa-nome" type="text" placeholder="Wimol Engenharia e Construções" oninput="salvarConfigGeral()"></div>
+        <div class="form-group"><label>CNPJ</label><input id="cfg-empresa-cnpj" type="text" placeholder="00.000.000/0001-00" oninput="salvarConfigGeral()"></div>
+        <div class="form-group"><label>Telefone</label><input id="cfg-empresa-tel" type="text" placeholder="(85) 00000-0000" oninput="salvarConfigGeral()"></div>
+        <div class="form-group"><label>E-mail</label><input id="cfg-empresa-email" type="email" placeholder="contato@wimol.com.br" oninput="salvarConfigGeral()"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Endereço</label><input id="cfg-empresa-end" type="text" placeholder="Rua, número, bairro, cidade — CE" oninput="salvarConfigGeral()"></div>
+      </div>
+    </div>
+
+    <div class="section-header"><span class="section-title"><i class="ti ti-adjustments" style="vertical-align:-2px;margin-right:6px;color:var(--ouro)"></i>Preferências do sistema</span></div>
+    <div class="card" style="padding:1.25rem;margin-bottom:1.5rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="form-group"><label>Moeda</label>
+          <select id="cfg-moeda" onchange="salvarConfigGeral()">
+            <option value="BRL">Real brasileiro (R$)</option>
+            <option value="USD">Dólar americano ($)</option>
+            <option value="EUR">Euro (€)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Data padrão dos gastos</label>
+          <select id="cfg-data-padrao" onchange="salvarConfigGeral()">
+            <option value="hoje">Data de hoje (automático)</option>
+            <option value="manual">Inserir manualmente</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Status padrão novo gasto</label>
+          <select id="cfg-status-padrao" onchange="salvarConfigGeral()">
+            <option value="Pendente">Pendente</option>
+            <option value="Aprovado">Aprovado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header"><span class="section-title"><i class="ti ti-list" style="vertical-align:-2px;margin-right:6px;color:var(--ouro)"></i>Listas de gastos</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1.5rem">
+      <div>
+        <div class="section-header"><span style="font-size:13px;font-weight:600;color:var(--azul)">Categorias</span></div>
+        <div class="card" style="padding:1rem">
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input id="cfg-cat-input" type="text" placeholder="Nova categoria..." style="flex:1;font-size:13px;padding:7px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);font-family:inherit;outline:none;color:var(--txt)">
+            <button class="btn btn-primary" onclick="adicionarItem('categorias','cfg-cat-input','cfg-cat-lista')"><i class="ti ti-plus"></i></button>
+          </div>
+          <div id="cfg-cat-lista" style="display:flex;flex-direction:column;gap:6px"></div>
+        </div>
+      </div>
+      <div>
+        <div class="section-header"><span style="font-size:13px;font-weight:600;color:var(--azul)">Tipos de material</span></div>
+        <div class="card" style="padding:1rem">
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input id="cfg-tipo-input" type="text" placeholder="Novo tipo..." style="flex:1;font-size:13px;padding:7px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);font-family:inherit;outline:none;color:var(--txt)">
+            <button class="btn btn-primary" onclick="adicionarItem('tipos','cfg-tipo-input','cfg-tipo-lista')"><i class="ti ti-plus"></i></button>
+          </div>
+          <div id="cfg-tipo-lista" style="display:flex;flex-direction:column;gap:6px"></div>
+        </div>
+      </div>
+      <div>
+        <div class="section-header"><span style="font-size:13px;font-weight:600;color:var(--azul)">Unidades de medida</span></div>
+        <div class="card" style="padding:1rem">
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input id="cfg-un-input" type="text" placeholder="Nova unidade..." style="flex:1;font-size:13px;padding:7px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);font-family:inherit;outline:none;color:var(--txt)">
+            <button class="btn btn-primary" onclick="adicionarItem('unidades','cfg-un-input','cfg-un-lista')"><i class="ti ti-plus"></i></button>
+          </div>
+          <div id="cfg-un-lista" style="display:flex;flex-direction:column;gap:6px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header"><span class="section-title"><i class="ti ti-database" style="vertical-align:-2px;margin-right:6px;color:var(--ouro)"></i>Backup e dados</span></div>
+    <div class="card" style="padding:1.25rem;margin-bottom:1.5rem">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-primary" onclick="exportarDados()"><i class="ti ti-download"></i> Exportar backup (JSON)</button>
+        <label class="btn" style="cursor:pointer"><i class="ti ti-upload"></i> Importar backup
+          <input type="file" accept=".json" onchange="importarDados(event)" style="display:none">
+        </label>
+        <button class="btn" style="color:#791F1F;border-color:#f09595" onclick="resetarDados()"><i class="ti ti-refresh"></i> Resetar todos os dados</button>
+      </div>
+      <p style="margin-top:10px;font-size:12px;color:var(--txt3)">O backup exporta todos os dados em formato JSON. Use para transferir entre dispositivos ou fazer cópias de segurança.</p>
+    </div>
+
+    <div style="font-size:12px;color:var(--txt3);background:var(--ouro-light);border:0.5px solid var(--ouro);border-radius:var(--radius);padding:10px 14px">
+      <i class="ti ti-info-circle" style="vertical-align:-2px;color:var(--ouro)"></i>
+      Itens com 🔒 são padrão do sistema e não podem ser removidos. Alterações nas listas ficam disponíveis imediatamente em todos os formulários.
+    </div>
+  </div><!-- fim page-config -->
+
+</div><!-- fim .main -->
+
+<!-- MODAL PERFIL -->
+<div class="modal-bg" id="modal-perfil">
+  <div class="modal">
+    <h2><i class="ti ti-user-plus"></i><span id="modal-perfil-titulo">Novo usuário</span></h2>
+    <div class="form-group"><label>Nome completo *</label><input id="pf-nome" type="text" placeholder="Ex: João Silva"></div>
+    <div class="form-group"><label>Cargo / Função</label><input id="pf-cargo" type="text" placeholder="Ex: Engenheiro, Comprador, Gestor"></div>
+    <div class="form-group"><label>E-mail</label><input id="pf-email" type="email" placeholder="email@wimol.com.br"></div>
+    <div class="form-group"><label>Nível de acesso</label>
+      <select id="pf-nivel">
+        <option value="admin">Administrador — acesso total</option>
+        <option value="gestor">Gestor — visualiza e edita</option>
+        <option value="visualizador">Visualizador — somente leitura</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Senha *</label><input id="pf-senha" type="password" placeholder="Mínimo 4 caracteres"></div>
+    <div class="form-group"><label>Confirmar senha *</label><input id="pf-confirma" type="password" placeholder="Repita a senha"></div>
+    <input type="hidden" id="pf-edit-idx" value="">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-perfil')">Cancelar</button>
+      <button class="btn btn-primary" id="btn-salvar-perfil" onclick="salvarPerfil()"><i class="ti ti-check"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-pedido">
+  <div class="modal">
+    <h2><i class="ti ti-receipt"></i><span id="modal-pedido-titulo">Novo gasto</span></h2>
+    <div class="section-divider">Identificação</div>
+    <div class="form-row">
+      <div class="form-group"><label>Obra</label><select id="p-obra"></select></div>
+      <div class="form-group"><label>Fornecedor</label><select id="p-forn"></select></div>
+    </div>
+    <div class="section-divider">Material</div>
+    <div class="form-group"><label>Selecionar do catálogo</label>
+      <select id="p-catalogo" onchange="preencherDoCatalogo()"><option value="">— digitar manualmente —</option></select>
+    </div>
+    <div class="form-group"><label>Nome do material / serviço *</label>
+      <input id="p-mat" type="text" placeholder="Ex: Cimento CP-II 50kg">
+    </div>
+    <div class="form-row3">
+      <div class="form-group"><label>Categoria</label>
+        <select id="p-cat"><option>Materiais</option><option>Equipamentos</option><option>Serviços</option><option>Elétrica</option><option>Hidráulica</option><option>Acabamento</option><option>Documentação</option><option>Terreno</option></select>
+      </div>
+      <div class="form-group"><label>Tipo</label>
+        <select id="p-tipo"><option>Estrutural</option><option>Vedação</option><option>Revestimento</option><option>Cobertura</option><option>Instalação</option><option>Acabamento</option><option>Ferragem</option><option>Impermeabilização</option><option>Equipamento</option><option>Serviço</option></select>
+      </div>
+      <div class="form-group"><label>Unidade</label>
+        <select id="p-un"><option>un</option><option>kg</option><option>t</option><option>m</option><option>m²</option><option>m³</option><option>sc</option><option>cx</option><option>l</option><option>rolo</option><option>hr</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Quantidade *</label>
+        <input id="p-qtd" type="number" min="0" placeholder="0" oninput="atualizarTotal()">
+      </div>
+      <div class="form-group"><label>Valor unitário (R$) *</label>
+        <input id="p-vl" type="number" min="0" step="0.01" placeholder="0,00" oninput="atualizarTotal()">
+      </div>
+    </div>
+    <div class="valor-total-preview" id="vl-total-preview">Valor total: R$ 0,00</div>
+    <div class="form-group" style="margin-top:12px"><label>Observações</label>
+      <textarea id="p-obs" placeholder="Informações adicionais..."></textarea>
+    </div>
+    <input type="hidden" id="p-edit-id" value="">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-pedido')">Cancelar</button>
+      <button class="btn btn-primary" id="btn-salvar-pedido" onclick="salvarPedido()"><i class="ti ti-check"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MATERIAL -->
+<div class="modal-bg" id="modal-material">
+  <div class="modal">
+    <h2><i class="ti ti-packages"></i>Novo material no catálogo</h2>
+    <div class="form-group"><label>Nome do material *</label><input id="m-nome" type="text" placeholder="Ex: Tijolo cerâmico 9x19x29"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Categoria</label>
+        <select id="m-cat"><option>Materiais</option><option>Equipamentos</option><option>Serviços</option><option>Elétrica</option><option>Hidráulica</option><option>Acabamento</option><option>Documentação</option><option>Terreno</option></select>
+      </div>
+      <div class="form-group"><label>Tipo de material</label>
+        <select id="m-tipo"><option>Estrutural</option><option>Vedação</option><option>Revestimento</option><option>Cobertura</option><option>Instalação</option><option>Acabamento</option><option>Ferragem</option><option>Impermeabilização</option><option>Equipamento</option><option>Serviço</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Unidade</label>
+        <select id="m-un"><option>un</option><option>kg</option><option>t</option><option>m</option><option>m²</option><option>m³</option><option>sc</option><option>cx</option><option>l</option><option>rolo</option><option>hr</option></select>
+      </div>
+      <div class="form-group"><label>Preço referência (R$)</label><input id="m-preco" type="number" min="0" step="0.01" placeholder="0,00"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Quantidade em estoque</label><input id="m-qtd" type="number" min="0" placeholder="0"></div>
+      <div class="form-group"><label>Quantidade mínima (alerta)</label><input id="m-qtdmin" type="number" min="0" placeholder="0"></div>
+    </div>
+    <div class="form-group"><label>Especificação técnica</label><textarea id="m-spec" placeholder="Norma, dimensões, resistência..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-material')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarMaterial()"><i class="ti ti-check"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FORNECEDOR -->
+<div class="modal-bg" id="modal-fornecedor">
+  <div class="modal">
+    <h2><i class="ti ti-building-store"></i>Novo fornecedor</h2>
+    <div class="form-group"><label>Nome da empresa *</label><input id="f-nome" type="text" placeholder="Razão social"></div>
+    <div class="form-row">
+      <div class="form-group"><label>CNPJ</label><input id="f-cnpj" type="text" placeholder="00.000.000/0001-00"></div>
+      <div class="form-group"><label>Categoria</label>
+        <select id="f-cat"><option>Materiais</option><option>Equipamentos</option><option>Serviços</option><option>Elétrica</option><option>Hidráulica</option><option>Acabamento</option><option>Documentação</option><option>Terreno</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Contato</label><input id="f-contato" type="text" placeholder="Nome do responsável"></div>
+      <div class="form-group"><label>Telefone / WhatsApp</label><input id="f-tel" type="text" placeholder="(85) 00000-0000"></div>
+    </div>
+    <div class="form-group"><label>E-mail</label><input id="f-email" type="email" placeholder="email@empresa.com"></div>
+    <div class="form-group"><label>Observações</label><textarea id="f-obs" placeholder="Prazo, condições..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-fornecedor')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarFornecedor()"><i class="ti ti-check"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL OBRA -->
+<div class="modal-bg" id="modal-obra">
+  <div class="modal">
+    <h2><i class="ti ti-building"></i><span id="modal-obra-titulo">Nova obra</span></h2>
+    <div class="form-group"><label>Nome da obra *</label><input id="o-nome" type="text" placeholder="Ex: Residencial Parque das Flores"></div>
+    <div class="form-group"><label>Endereço completo</label><input id="o-end" type="text" placeholder="Rua, número, bairro, cidade — CE"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Responsável / Engenheiro</label><input id="o-resp" type="text" placeholder="Nome"></div>
+      <div class="form-group"><label>Orçamento total (R$)</label><input id="o-orc" type="number" min="0" placeholder="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Data de início</label><input id="o-inicio" type="date"></div>
+      <div class="form-group"><label>Previsão de término</label><input id="o-fim" type="date"></div>
+    </div>
+    <div class="form-group"><label>Status</label>
+      <select id="o-status">
+        <option value="Iniciando">Iniciando</option>
+        <option value="Em andamento">Em andamento</option>
+        <option value="Concluída">Concluída</option>
+        <option value="Pausada">Pausada</option>
+      </select>
+    </div>
+    <input type="hidden" id="o-edit-idx" value="">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-obra')">Cancelar</button>
+      <button class="btn btn-primary" id="btn-salvar-obra" onclick="salvarObra()"><i class="ti ti-check"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check" style="font-size:14px"></i><span id="toast-msg"></span></div>
+
+<!-- Loading screen -->
+<div id="loading-screen" style="position:fixed;inset:0;background:var(--azul);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999">
+  <svg width="52" height="52" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:1rem">
+    <rect x="15" y="3" width="8" height="32" fill="#1648A0" opacity="0.5"/>
+    <rect x="15" y="3" width="8" height="32" fill="none" stroke="#C9A84C" stroke-width="0.8" rx="1"/>
+    <line x1="15" y1="11" x2="23" y2="11" stroke="#C9A84C" stroke-width="0.8"/>
+    <line x1="15" y1="19" x2="23" y2="19" stroke="#C9A84C" stroke-width="0.6" opacity="0.5"/>
+    <line x1="15" y1="27" x2="23" y2="27" stroke="#C9A84C" stroke-width="0.8"/>
+    <line x1="19" y1="3" x2="6" y2="14" stroke="#C9A84C" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="19" y1="3" x2="32" y2="14" stroke="#C9A84C" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="6" y1="14" x2="6" y2="35" stroke="#C9A84C" stroke-width="0.9"/>
+    <line x1="32" y1="14" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9"/>
+    <line x1="6" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="2"/>
+    <circle cx="19" cy="3" r="2.5" fill="#C9A84C"/>
+  </svg>
+  <div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#C9A84C;letter-spacing:1px">WIMOL</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:3px;text-transform:uppercase;margin-top:4px">Conectando...</div>
+</div>
+
+<!-- Firebase SDK compat (funciona em todos os navegadores/CDNs) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const tipoCores={
+  'Estrutural':{bg:'#E6F1FB',tx:'#0C447C'},'Vedação':{bg:'#FAEEDA',tx:'#633806'},
+  'Revestimento':{bg:'#EAF3DE',tx:'#27500A'},'Cobertura':{bg:'#EEEDFE',tx:'#3C3489'},
+  'Instalação':{bg:'#E1F5EE',tx:'#085041'},'Acabamento':{bg:'#FBEAF0',tx:'#72243E'},
+  'Ferragem':{bg:'#F1EFE8',tx:'#444441'},'Impermeabilização':{bg:'#FAECE7',tx:'#712B13'},
+  'Equipamento':{bg:'#FCEBEB',tx:'#791F1F'},'Serviço':{bg:'#D3D1C7',tx:'#2C2C2A'}
+};
+function tipoBadge(t){const c=tipoCores[t]||{bg:'#F1EFE8',tx:'#444441'};return `<span class="tipo-badge" style="background:${c.bg};color:${c.tx}">${t}</span>`}
+function fmt(v){return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function fmtDt(s){if(!s)return '—';try{return new Date(s+'T12:00').toLocaleDateString('pt-BR')}catch{return s}}
+function toast(msg,tipo){
+  document.getElementById('toast-msg').textContent=msg;
+  const t=document.getElementById('toast');
+  t.style.borderColor=tipo==='edit'?'#4A7FD4':'var(--ouro)';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ---- CONFIG (declarada primeiro para evitar ReferenceError) ----
+let config = {
+  categorias:{padrao:['Materiais','Equipamentos','Serviços','Elétrica','Hidráulica','Acabamento','Documentação','Terreno'],custom:[]},
+  tipos:{padrao:['Estrutural','Vedação','Revestimento','Cobertura','Instalação','Acabamento','Ferragem','Impermeabilização','Equipamento','Serviço'],custom:[]},
+  unidades:{padrao:['un','kg','t','m','m²','m³','sc','cx','l','rolo','hr'],custom:[]}
+};
+
+// ---- DADOS PADRÃO ----
+const DADOS_PADRAO = {
+  pedidos:[],
+  fornecedores:[],
+  materiais:[],
+  obras:[],
+  perfis:[
+    {nome:'Administrador',cargo:'Administrador do sistema',email:'admin@wimol.com.br',nivel:'admin',senha:'1234'}
+  ]
+};
+
+// ---- FIREBASE — Sincronização em tempo real ----
+const firebaseConfig = {
+  apiKey: "AIzaSyCcdwSwIkiutdvrqIdOb1WeQN98N0zTi2Q",
+  authDomain: "wimol-gestao.firebaseapp.com",
+  databaseURL: "https://wimol-gestao-default-rtdb.firebaseio.com",
+  projectId: "wimol-gestao",
+  storageBucket: "wimol-gestao.firebasestorage.app",
+  messagingSenderId: "30558433771",
+  appId: "1:30558433771:web:b04baf396003d79f9e69ae"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const dbRef = db.ref('wimol');
+
+// Salvar tudo no Firebase
+function salvarLS(){
+  try{ dbRef.set({pedidos,fornecedores,materiais,obras,perfis,config,nextId}); }
+  catch(e){ console.warn('Erro ao salvar Firebase:',e); }
+}
+
+// Aplicar dados vindos do Firebase
+function aplicarDados(d){
+  if(!d) return false;
+  pedidos      = d.pedidos      ? Object.values(d.pedidos)      : DADOS_PADRAO.pedidos;
+  fornecedores = d.fornecedores ? Object.values(d.fornecedores) : DADOS_PADRAO.fornecedores;
+  materiais    = d.materiais    ? Object.values(d.materiais)    : DADOS_PADRAO.materiais;
+  obras        = d.obras        ? Object.values(d.obras)        : DADOS_PADRAO.obras;
+  perfis       = d.perfis       ? Object.values(d.perfis)       : DADOS_PADRAO.perfis;
+  if(d.config) config = d.config;
+  nextId       = d.nextId       || (pedidos.length + 1);
+  return true;
+}
+
+// ---- Dados em memória ----
+let pedidos=[], fornecedores=[], materiais=[], obras=[], perfis=[];
+let nextId=1;
+let _primeiraLeitura=true;
+
+// Ouvir mudanças em tempo real
+function inicializar(){
+  document.getElementById('loading-screen').style.display='flex';
+  dbRef.on('value', (snapshot)=>{
+    const d = snapshot.val();
+    if(!aplicarDados(d)){
+      // Banco vazio — iniciar limpo sem dados de exemplo
+      pedidos=[];fornecedores=[];materiais=[];obras=[];perfis=DADOS_PADRAO.perfis;
+      nextId=1;
+      // Não salvar no Firebase — deixar vazio até o usuário cadastrar
+    }
+    document.getElementById('loading-screen').style.display='none';
+    renderAll();
+    if(_primeiraLeitura){ _primeiraLeitura=false; }
+    else{ toast('Sincronizado!'); }
+  }, (error)=>{
+    console.error('Firebase erro:',error);
+    document.getElementById('loading-screen').style.display='none';
+    toast('Erro de conexão — verifique a internet');
+  });
+}
+
+function obraFiltro(){return document.getElementById('obra-filter').value}
+
+function getPedidosFiltrados(){
+  const obra=obraFiltro();
+  const busca=(document.getElementById('f-busca').value||'').toLowerCase();
+  const tipo=document.getElementById('f-tipo').value;
+  const cat=document.getElementById('f-cat').value;
+  const st=document.getElementById('f-status').value;
+  const dtIni=document.getElementById('f-dt-ini').value;
+  const dtFim=document.getElementById('f-dt-fim').value;
+  return pedidos.filter(x=>{
+    if(obra!=='todas'&&x.obra!==obra)return false;
+    if(busca&&![x.mat,x.forn,x.obra,x.obs].some(v=>(v||'').toLowerCase().includes(busca)))return false;
+    if(tipo&&x.tipo!==tipo)return false;
+    if(cat&&x.cat!==cat)return false;
+    if(st&&x.status!==st)return false;
+    if(dtIni&&x.dt<dtIni)return false;
+    if(dtFim&&x.dt>dtFim)return false;
+    return true;
+  });
+}
+
+function aplicarFiltros(){renderPedidos();renderMetricasPedidos();}
+function limparFiltros(){
+  ['f-busca','f-tipo','f-cat','f-status','f-dt-ini','f-dt-fim'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el.tagName==='SELECT') el.value=''; else el.value='';
+  });
+  aplicarFiltros();
+}
+
+function renderPedidos(){
+  const p=getPedidosFiltrados();
+  const tb=document.getElementById('tbody-pedidos');
+  const total=p.reduce((a,x)=>a+x.qtd*x.vl,0);
+  document.getElementById('resultado-label').textContent=
+    p.length===pedidos.length?`${p.length} gastos`:`${p.length} resultado${p.length!==1?'s':''} — Total filtrado: ${fmt(total)}`;
+  if(!p.length){tb.innerHTML='<tr><td colspan="12"><div class="empty">Nenhum gasto encontrado para os filtros aplicados</div></td></tr>';return}
+  tb.innerHTML=p.map(x=>{
+    const cl={Pendente:'s-pendente',Aprovado:'s-aprovado',Recebido:'s-recebido',Cancelado:'s-cancelado'}[x.status]||'s-pendente';
+    const vtotal=fmt(x.qtd*x.vl);
+    return `<tr>
+      <td style="color:var(--txt3)">#${String(x.id).padStart(4,'0')}</td>
+      <td><span class="chip">${x.obra}</span></td>
+      <td>${x.forn}</td>
+      <td style="max-width:150px;white-space:normal;line-height:1.4">${x.mat}</td>
+      <td><span class="chip">${x.cat}</span></td>
+      <td>${tipoBadge(x.tipo)}</td>
+      <td>${x.qtd} ${x.un}</td>
+      <td style="color:var(--txt2)">${fmt(x.vl)}</td>
+      <td style="font-weight:700;color:var(--azul)">${vtotal}</td>
+      <td style="color:var(--txt2)">${fmtDt(x.dt)}</td>
+      <td><span class="status ${cl}" style="cursor:pointer" onclick="ciclarStatus(${x.id})" title="Clique para mudar status">${x.status}</span></td>
+      <td style="white-space:nowrap">
+        <div style="display:flex;align-items:center;gap:4px;opacity:0.4;transition:opacity .15s" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0.4">
+          <button onclick="editarPedido(${x.id})" title="Editar" style="background:none;border:none;cursor:pointer;color:var(--azul2);font-size:15px;padding:2px 4px;border-radius:4px;line-height:1"><i class="ti ti-pencil"></i></button>
+          <button onclick="excluirPedido(${x.id})" title="Excluir" style="background:none;border:none;cursor:pointer;color:#c0392b;font-size:15px;padding:2px 4px;border-radius:4px;line-height:1"><i class="ti ti-trash"></i></button>
+        </div>
+      </td>
+    </tr>`}).join('');
+}
+
+function renderMetricasPedidos(){
+  const p=getPedidosFiltrados();
+  const total=p.reduce((a,x)=>a+x.qtd*x.vl,0);
+  const pend=p.filter(x=>x.status==='Pendente').length;
+  const aprov=p.filter(x=>x.status==='Aprovado').reduce((a,x)=>a+x.qtd*x.vl,0);
+  const rec=p.filter(x=>x.status==='Recebido').reduce((a,x)=>a+x.qtd*x.vl,0);
+  document.getElementById('metrics-pedidos').innerHTML=`
+    <div class="metric"><div class="metric-label">Total de gastos</div><div class="metric-value">${p.length}</div><div class="metric-sub">${pend} pendentes</div></div>
+    <div class="metric"><div class="metric-label">Valor total</div><div class="metric-value">${fmt(total)}</div><div class="metric-sub">todos os pedidos</div></div>
+    <div class="metric"><div class="metric-label">A entregar</div><div class="metric-value">${fmt(aprov)}</div><div class="metric-sub">aprovados</div></div>
+    <div class="metric"><div class="metric-label">Recebido</div><div class="metric-value">${fmt(rec)}</div><div class="metric-sub">confirmado</div></div>`;
+}
+
+function atualizarTotal(){
+  const q=parseFloat(document.getElementById('p-qtd').value)||0;
+  const v=parseFloat(document.getElementById('p-vl').value)||0;
+  document.getElementById('vl-total-preview').textContent='Valor total: '+fmt(q*v);
+}
+
+function editarPedido(id){
+  const p=pedidos.find(x=>x.id===id);
+  if(!p)return;
+  document.getElementById('modal-pedido-titulo').textContent='Editar gasto #'+String(id).padStart(4,'0');
+  document.getElementById('btn-salvar-pedido').innerHTML='<i class="ti ti-check"></i> Atualizar';
+  document.getElementById('p-edit-id').value=id;
+  document.getElementById('p-obra').value=p.obra;
+  document.getElementById('p-forn').value=p.forn;
+  document.getElementById('p-mat').value=p.mat;
+  document.getElementById('p-cat').value=p.cat;
+  document.getElementById('p-tipo').value=p.tipo;
+  document.getElementById('p-un').value=p.un;
+  document.getElementById('p-qtd').value=p.qtd;
+  document.getElementById('p-vl').value=p.vl;
+  document.getElementById('p-obs').value=p.obs||'';
+  document.getElementById('p-catalogo').value='';
+  atualizarTotal();
+  openModal('modal-pedido');
+}
+
+function renderFornecedores(){
+  const tb=document.getElementById('tbody-fornecedores');
+  tb.innerHTML=fornecedores.map(f=>{
+    const np=pedidos.filter(p=>p.forn===f.nome).length;
+    return `<tr><td style="font-weight:700">${f.nome}</td><td style="color:var(--txt2)">${f.cnpj||'—'}</td><td><span class="chip">${f.cat}</span></td><td>${f.contato||'—'}</td><td style="color:var(--txt2)">${f.tel||'—'}</td><td style="color:var(--txt2)">${f.email||'—'}</td><td>${np}</td></tr>`}).join('');
+}
+function renderMateriais(){
+  const tb=document.getElementById('tbody-materiais');
+  tb.innerHTML=materiais.map(m=>{
+    const np=pedidos.filter(p=>p.mat===m.nome).length;
+    const low=m.qtdmin>0&&(m.qtd||0)<=m.qtdmin;
+    return `<tr>
+      <td style="font-weight:700">${m.nome}</td>
+      <td><span class="chip">${m.cat}</span></td>
+      <td>${tipoBadge(m.tipo)}</td>
+      <td style="color:var(--txt2)">${m.un}</td>
+      <td style="font-weight:600;color:${low?'#A32D2D':'var(--azul)'}">${m.qtd??'—'}${low?' ⚠':''}</td>
+      <td style="color:var(--txt2)">${m.qtdmin??'—'}</td>
+      <td style="color:var(--azul);font-weight:600">${m.preco?fmt(m.preco):'—'}</td>
+      <td style="color:var(--txt2);font-size:12px;max-width:180px;white-space:normal">${m.spec||'—'}</td>
+      <td>${np}</td>
+    </tr>`}).join('');
+}
+function barHtml(label,val,max,cor){
+  const pct=max>0?Math.round(val/max*100):0;
+  return `<div class="bar-row"><div class="bar-header"><span class="bar-label">${label}</span><span class="bar-value">${fmt(val)}</span></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${cor}"></div></div></div>`;
+}
+function renderRelatorios(){
+  const p=pedidos.filter(x=>obraFiltro()==='todas'||x.obra===obraFiltro());
+  const total=p.reduce((a,x)=>a+x.qtd*x.vl,0);
+  const rec=p.filter(x=>x.status==='Recebido').reduce((a,x)=>a+x.qtd*x.vl,0);
+  const pend=p.filter(x=>x.status==='Pendente').reduce((a,x)=>a+x.qtd*x.vl,0);
+  document.getElementById('metrics-rel').innerHTML=`
+    <div class="metric"><div class="metric-label">Valor total</div><div class="metric-value">${fmt(total)}</div></div>
+    <div class="metric"><div class="metric-label">Recebido</div><div class="metric-value">${fmt(rec)}</div></div>
+    <div class="metric"><div class="metric-label">Pendente</div><div class="metric-value">${fmt(pend)}</div></div>`;
+  const byObra={};p.forEach(x=>{byObra[x.obra]=(byObra[x.obra]||0)+x.qtd*x.vl});
+  const byTipo={};p.forEach(x=>{byTipo[x.tipo]=(byTipo[x.tipo]||0)+x.qtd*x.vl});
+  const byCat={};p.forEach(x=>{byCat[x.cat]=(byCat[x.cat]||0)+x.qtd*x.vl});
+  const cO=['#0D2B5E','#1648A0','#C9A84C','#4A7FD4','#E8C96A'];
+  const maxO=Math.max(...Object.values(byObra),1);
+  document.getElementById('rel-obras').innerHTML=Object.entries(byObra).sort((a,b)=>b[1]-a[1]).map(([k,v],i)=>barHtml(k,v,maxO,cO[i%cO.length])).join('')||'<p style="font-size:13px;color:var(--txt2)">Sem dados</p>';
+  const maxT=Math.max(...Object.values(byTipo),1);
+  document.getElementById('rel-tipo').innerHTML=Object.entries(byTipo).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{const c=tipoCores[k]||{tx:'#888'};return barHtml(k,v,maxT,c.tx)}).join('')||'<p style="font-size:13px;color:var(--txt2)">Sem dados</p>';
+  const cC=['#C9A84C','#0D2B5E','#1648A0','#4A7FD4','#888780'];
+  const maxC=Math.max(...Object.values(byCat),1);
+  document.getElementById('rel-cat').innerHTML=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([k,v],i)=>barHtml(k,v,maxC,cC[i%cC.length])).join('')||'<p style="font-size:13px;color:var(--txt2)">Sem dados</p>';
+  const tb=document.getElementById('tbody-rel-pedidos');
+  tb.innerHTML=p.map(x=>{
+    const cl={Pendente:'s-pendente',Aprovado:'s-aprovado',Recebido:'s-recebido',Cancelado:'s-cancelado'}[x.status]||'s-pendente';
+    return `<tr><td style="color:var(--txt3)">#${String(x.id).padStart(4,'0')}</td><td>${x.obra}</td><td>${x.forn}</td><td>${x.mat}</td><td>${tipoBadge(x.tipo)}</td><td>${x.qtd} ${x.un}</td><td style="color:var(--txt2)">${fmt(x.vl)}</td><td style="font-weight:700;color:var(--azul)">${fmt(x.qtd*x.vl)}</td><td><span class="status ${cl}">${x.status}</span></td></tr>`}).join('');
+}
+function renderObras(){
+  const tb=document.getElementById('tbody-obras');
+  tb.innerHTML=obras.map((o,idx)=>{
+    const gasto=pedidos.filter(p=>p.obra===o.nome&&p.status==='Recebido').reduce((a,p)=>a+p.qtd*p.vl,0);
+    const pct=o.orc?Math.min(100,Math.round(gasto/o.orc*100)):0;
+    const cor=pct>80?'#E24B4A':pct>50?'#C9A84C':'#1648A0';
+    const stCl=o.status==='Em andamento'?'s-aprovado':o.status==='Concluída'?'s-recebido':o.status==='Pausada'?'s-cancelado':'s-pendente';
+    return `<tr>
+      <td style="font-weight:700">${o.nome}</td>
+      <td style="color:var(--txt2);font-size:12px;max-width:180px;white-space:normal">${o.end||'—'}</td>
+      <td>${o.resp||'—'}</td>
+      <td><span class="status ${stCl}">${o.status}</span></td>
+      <td>${fmt(o.orc)}</td>
+      <td style="font-weight:700;color:var(--azul)">${fmt(gasto)}</td>
+      <td><div style="display:flex;align-items:center;gap:6px">
+        <div style="width:60px;height:5px;background:var(--bg2);border-radius:3px">
+          <div style="height:100%;width:${pct}%;background:${cor};border-radius:3px"></div>
+        </div>
+        <span style="font-size:11px;color:var(--txt2)">${pct}%</span>
+      </div></td>
+      <td style="white-space:nowrap">
+        <div style="display:flex;gap:6px">
+          <button class="btn-edit" onclick="editarObra(${idx})" title="Editar obra"><i class="ti ti-pencil" style="font-size:12px"></i></button>
+          <button class="btn-edit" onclick="excluirObra(${idx})" title="Excluir obra" style="background:#FCEBEB;color:#791F1F;border-color:#f09595"><i class="ti ti-trash" style="font-size:12px"></i></button>
+        </div>
+      </td>
+    </tr>`}).join('');
+}
+// ---- LISTAS DINÂMICAS ----
+function getList(chave){ return [...config[chave].padrao,...config[chave].custom] }
+
+function renderConfigLista(chave, listaId){
+  const el = document.getElementById(listaId);
+  if(!el) return;
+  const padrao = config[chave].padrao;
+  const custom = config[chave].custom;
+  const todos = [...padrao.map(v=>({v,lock:true})), ...custom.map(v=>({v,lock:false}))];
+  el.innerHTML = todos.map(({v,lock})=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg2);border-radius:var(--radius);border:0.5px solid var(--border)">
+      <span style="font-size:13px;color:var(--txt)">${v}</span>
+      ${lock
+        ? `<i class="ti ti-lock" style="font-size:14px;color:var(--txt3)" title="Item padrão do sistema"></i>`
+        : `<button onclick="removerItem('${chave}','${v}','${listaId}')" style="background:none;border:none;cursor:pointer;color:#c0392b;font-size:15px;line-height:1;padding:0" title="Remover"><i class="ti ti-trash"></i></button>`
+      }
+    </div>`).join('');
+}
+
+function adicionarItem(chave, inputId, listaId){
+  const input = document.getElementById(inputId);
+  const val = input.value.trim();
+  if(!val){ input.focus(); return; }
+  const todos = getList(chave);
+  if(todos.map(v=>v.toLowerCase()).includes(val.toLowerCase())){
+    alert('Este item já existe na lista.'); return;
+  }
+  config[chave].custom.push(val);
+  input.value = '';
+  renderConfigLista(chave, listaId);
+  salvarLS();updateSelects();
+  toast('Item adicionado!');
+}
+
+function removerItem(chave, val, listaId){
+  if(!confirm(`Remover "${val}"?`)) return;
+  config[chave].custom = config[chave].custom.filter(v=>v!==val);
+  renderConfigLista(chave, listaId);
+  salvarLS();updateSelects();
+  toast('Item removido!');
+}
+
+function renderAllConfig(){
+  renderConfigLista('categorias','cfg-cat-lista');
+  renderConfigLista('tipos','cfg-tipo-lista');
+  renderConfigLista('unidades','cfg-un-lista');
+}
+
+function optsFrom(chave){ return getList(chave).map(v=>`<option>${v}</option>`).join('') }
+
+function syncObraFilter(){
+  const sel=document.getElementById('obra-filter');
+  const cur=sel.value;
+  const opts=['<option value="todas">Todas as obras</option>']
+    .concat(obras.map(o=>`<option value="${o.nome}">${o.nome}</option>`));
+  sel.innerHTML=opts.join('');
+  if([...sel.options].some(o=>o.value===cur)) sel.value=cur;
+}
+function setSelect(id, html, valorAnterior){
+  try{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.innerHTML=html;
+    if(valorAnterior && el.querySelector(`option[value="${CSS.escape(valorAnterior)}"], option:not([value])`)){
+      el.value=valorAnterior;
+    }
+  }catch(e){}
+}
+function updateSelects(){
+  try{
+    const opCat='<option value="">Todas</option>'+optsFrom('categorias');
+    const opCatForm=optsFrom('categorias');
+    const opTipo='<option value="">Todos os tipos</option>'+optsFrom('tipos');
+    const opTipoForm=optsFrom('tipos');
+    const opUn=optsFrom('unidades');
+    const opForn=fornecedores.length
+      ? fornecedores.map(f=>`<option value="${f.nome}">${f.nome}</option>`).join('')
+      : '<option value="">— cadastre um fornecedor primeiro —</option>';
+    const opObra=obras.length
+      ? obras.map(o=>`<option value="${o.nome}">${o.nome}</option>`).join('')
+      : '<option value="">— cadastre uma obra primeiro —</option>';
+    const opCat2='<option value="">— digitar manualmente —</option>'+materiais.map(m=>`<option value="${m.nome}">${m.nome} (${m.tipo})</option>`).join('');
+
+    ['p-cat','m-cat'].forEach(id=>setSelect(id,opCatForm,document.getElementById(id)?.value));
+    ['p-tipo','m-tipo'].forEach(id=>setSelect(id,opTipoForm,document.getElementById(id)?.value));
+    ['p-un','m-un'].forEach(id=>setSelect(id,opUn,document.getElementById(id)?.value));
+    setSelect('f-cat',opCat,document.getElementById('f-cat')?.value);
+    setSelect('f-tipo',opTipo,document.getElementById('f-tipo')?.value);
+    setSelect('p-forn',opForn,document.getElementById('p-forn')?.value);
+    setSelect('p-obra',opObra,document.getElementById('p-obra')?.value);
+    setSelect('p-catalogo',opCat2,document.getElementById('p-catalogo')?.value);
+    syncObraFilter();
+  }catch(e){ console.warn('updateSelects erro:',e); }
+}
+function preencherDoCatalogo(){
+  const val=document.getElementById('p-catalogo').value;
+  if(!val)return;
+  const m=materiais.find(x=>x.nome===val);
+  if(!m)return;
+  document.getElementById('p-mat').value=m.nome;
+  document.getElementById('p-cat').value=m.cat;
+  document.getElementById('p-tipo').value=m.tipo;
+  document.getElementById('p-un').value=m.un;
+  if(m.preco)document.getElementById('p-vl').value=m.preco;
+  atualizarTotal();
+}
+function renderAll(){
+  try{renderMetricasPedidos();}catch(e){}
+  try{renderPedidos();}catch(e){}
+  try{renderFornecedores();}catch(e){}
+  try{renderMateriais();}catch(e){}
+  try{renderRelatorios();}catch(e){}
+  try{renderObras();}catch(e){}
+  try{renderPerfis();}catch(e){}
+  try{updateSelects();}catch(e){}
+  try{renderAllConfig();}catch(e){}
+}
+function showPage(p){
+  ['pedidos','fornecedores','materiais','relatorios','obras','perfis','config'].forEach(x=>{document.getElementById('page-'+x).style.display=x===p?'':'none'});
+  document.querySelectorAll('.nav-item').forEach((el,i)=>{el.classList.toggle('active',['pedidos','fornecedores','materiais','relatorios','obras','perfis','config'][i]===p)});
+  const titles={pedidos:'Gastos',fornecedores:'Fornecedores',materiais:'Catálogo de materiais',relatorios:'Relatórios e gastos',obras:'Obras',perfis:'Perfis e senhas',config:'Configurações'};
+  document.getElementById('page-title').textContent=titles[p];
+  document.getElementById('sidebar').classList.remove('open');
+  if(p==='config'){ renderAllConfig(); carregarConfigGeral(); }
+  if(p==='perfis') renderPerfis();
+}
+function mudarStatus(id,st){const p=pedidos.find(x=>x.id===id);if(p){p.status=st;salvarLS();renderAll();toast('Status atualizado!')}}
+function ciclarStatus(id){
+  const p=pedidos.find(x=>x.id===id);
+  if(!p)return;
+  const ordem=['Pendente','Aprovado','Recebido','Cancelado'];
+  const atual=ordem.indexOf(p.status);
+  p.status=ordem[(atual+1)%ordem.length];
+  salvarLS();renderAll();toast('Status: '+p.status);
+}
+function excluirPedido(id){
+  const p=pedidos.find(x=>x.id===id);
+  if(!p)return;
+  if(!confirm(`Excluir o gasto "${p.mat}" (${fmt(p.qtd*p.vl)})?\n\nEssa ação não pode ser desfeita.`))return;
+  pedidos=pedidos.filter(x=>x.id!==id);
+  salvarLS();renderAll();toast('Gasto excluído!');
+}
+function openModal(id){
+  // Sempre atualizar selects antes de abrir qualquer modal
+  if(id==='modal-pedido'){
+    // Obras
+    const po=document.getElementById('p-obra');
+    if(po){
+      const cur=po.value;
+      po.innerHTML=obras.length
+        ? obras.map(o=>`<option value="${o.nome}">${o.nome}</option>`).join('')
+        : '<option value="">— cadastre uma obra primeiro —</option>';
+      if(obras.some(o=>o.nome===cur)) po.value=cur;
+    }
+    // Fornecedores
+    const pf=document.getElementById('p-forn');
+    if(pf){
+      const cur=pf.value;
+      pf.innerHTML=fornecedores.length
+        ? fornecedores.map(f=>`<option value="${f.nome}">${f.nome}</option>`).join('')
+        : '<option value="">— cadastre um fornecedor primeiro —</option>';
+      if(fornecedores.some(f=>f.nome===cur)) pf.value=cur;
+    }
+    // Catálogo
+    const pc=document.getElementById('p-catalogo');
+    if(pc) pc.innerHTML='<option value="">— digitar manualmente —</option>'+materiais.map(m=>`<option value="${m.nome}">${m.nome} (${m.tipo})</option>`).join('');
+  }
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+  if(id==='modal-pedido'){
+    document.getElementById('p-edit-id').value='';
+    document.getElementById('modal-pedido-titulo').textContent='Novo gasto';
+    document.getElementById('btn-salvar-pedido').innerHTML='<i class="ti ti-check"></i> Salvar';
+    document.getElementById('vl-total-preview').textContent='Valor total: R$ 0,00';
+  }
+  if(id==='modal-obra'){
+    document.getElementById('o-edit-idx').value='';
+    document.getElementById('modal-obra-titulo').textContent='Nova obra';
+    document.getElementById('btn-salvar-obra').innerHTML='<i class="ti ti-check"></i> Salvar';
+  }
+  if(id==='modal-perfil'){
+    document.getElementById('pf-edit-idx').value='';
+    document.getElementById('modal-perfil-titulo').textContent='Novo usuário';
+    document.getElementById('btn-salvar-perfil').innerHTML='<i class="ti ti-check"></i> Salvar';
+  }
+}
+document.querySelectorAll('.modal-bg').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)})});
+
+function salvarPedido(){
+  // Capturar TODOS os valores antes de qualquer outra operação
+  const mat = document.getElementById('p-mat').value.trim();
+  const qtd = parseFloat(document.getElementById('p-qtd').value)||0;
+  const vl  = parseFloat(document.getElementById('p-vl').value)||0;
+  const obra= document.getElementById('p-obra').value;
+  const forn= document.getElementById('p-forn').value;
+  const cat = document.getElementById('p-cat').value;
+  const tipo= document.getElementById('p-tipo').value;
+  const un  = document.getElementById('p-un').value;
+  const obs = document.getElementById('p-obs').value;
+  const editId = parseInt(document.getElementById('p-edit-id').value)||0;
+
+  if(!mat||!qtd||!vl){alert('Preencha: material, quantidade e valor.');return;}
+  if(!obra){alert('Selecione uma obra.');return;}
+
+  const dados={obra,forn,mat,qtd,vl,cat,tipo,un,dt:new Date().toISOString().slice(0,10),obs};
+
+  if(editId){
+    const idx=pedidos.findIndex(x=>x.id===editId);
+    if(idx>=0) pedidos[idx]={...pedidos[idx],...dados};
+    toast('Gasto atualizado!','edit');
+  } else {
+    pedidos.push({id:nextId++,status:'Pendente',...dados});
+    toast('Gasto salvo!');
+  }
+
+  // Fechar modal e limpar campos
+  closeModal('modal-pedido');
+  ['p-mat','p-qtd','p-vl','p-obs'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-catalogo').value='';
+
+  // Limpar filtros para garantir que o novo gasto apareça
+  limparFiltros();
+
+  // Salvar e renderizar
+  salvarLS();
+  renderAll();
+}
+function salvarMaterial(){
+  const nome=document.getElementById('m-nome').value.trim();
+  if(!nome){alert('Informe o nome do material.');return;}
+  materiais.push({nome,cat:document.getElementById('m-cat').value,tipo:document.getElementById('m-tipo').value,un:document.getElementById('m-un').value,preco:parseFloat(document.getElementById('m-preco').value)||0,qtd:parseFloat(document.getElementById('m-qtd').value)||0,qtdmin:parseFloat(document.getElementById('m-qtdmin').value)||0,spec:document.getElementById('m-spec').value});
+  closeModal('modal-material');['m-nome','m-preco','m-qtd','m-qtdmin','m-spec'].forEach(id=>document.getElementById(id).value='');
+  salvarLS();renderAll();toast('Material cadastrado!');
+}
+function salvarFornecedor(){
+  if(!document.getElementById('f-nome').value.trim()){alert('Informe o nome da empresa.');return;}
+  fornecedores.push({nome:document.getElementById('f-nome').value,cnpj:document.getElementById('f-cnpj').value,cat:document.getElementById('f-cat').value,contato:document.getElementById('f-contato').value,tel:document.getElementById('f-tel').value,email:document.getElementById('f-email').value,obs:document.getElementById('f-obs').value});
+  closeModal('modal-fornecedor');['f-nome','f-cnpj','f-contato','f-tel','f-email','f-obs'].forEach(id=>document.getElementById(id).value='');
+  salvarLS();renderAll();toast('Fornecedor cadastrado!');
+}
+function editarObra(idx){
+  const o=obras[idx];
+  if(!o)return;
+  document.getElementById('modal-obra-titulo').textContent='Editar obra';
+  document.getElementById('btn-salvar-obra').innerHTML='<i class="ti ti-check"></i> Atualizar';
+  document.getElementById('o-edit-idx').value=idx;
+  document.getElementById('o-nome').value=o.nome||'';
+  document.getElementById('o-end').value=o.end||'';
+  document.getElementById('o-resp').value=o.resp||'';
+  document.getElementById('o-orc').value=o.orc||'';
+  document.getElementById('o-inicio').value=o.inicio||'';
+  document.getElementById('o-fim').value=o.fim||'';
+  document.getElementById('o-status').value=o.status||'Iniciando';
+  openModal('modal-obra');
+}
+function excluirObra(idx){
+  const o=obras[idx];
+  if(!o)return;
+  const gastos=pedidos.filter(p=>p.obra===o.nome).length;
+  const msg=gastos>0
+    ? `Excluir "${o.nome}"?\n\nIsso também vai excluir ${gastos} gasto(s) vinculado(s) a esta obra.\n\nEssa ação não pode ser desfeita.`
+    : `Excluir "${o.nome}"?\n\nEssa ação não pode ser desfeita.`;
+  if(!confirm(msg))return;
+  pedidos=pedidos.filter(p=>p.obra!==o.nome);
+  obras.splice(idx,1);
+  salvarLS();renderAll();toast('Obra e gastos excluídos!');
+}
+function salvarObra(){
+  const nome=document.getElementById('o-nome').value.trim();
+  if(!nome){alert('Informe o nome da obra.');return;}
+  const editIdx=document.getElementById('o-edit-idx').value;
+  const dados={
+    nome,
+    end:document.getElementById('o-end').value,
+    resp:document.getElementById('o-resp').value,
+    orc:parseFloat(document.getElementById('o-orc').value)||0,
+    status:document.getElementById('o-status').value||'Iniciando',
+    inicio:document.getElementById('o-inicio').value,
+    fim:document.getElementById('o-fim').value
+  };
+  if(editIdx!==''){
+    const idx=parseInt(editIdx);
+    const nomeAntigo=obras[idx].nome;
+    obras[idx]={...obras[idx],...dados};
+    // Atualizar nome nos pedidos vinculados se mudou
+    if(nomeAntigo!==nome){
+      pedidos.forEach(p=>{ if(p.obra===nomeAntigo) p.obra=nome; });
+    }
+    toast('Obra atualizada!','edit');
+  } else {
+    obras.push(dados);
+    toast('Obra cadastrada!');
+  }
+  closeModal('modal-obra');
+  ['o-nome','o-end','o-resp','o-orc','o-inicio','o-fim'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('o-edit-idx').value='';
+  salvarLS();renderAll();
+}
+// ---- PERFIS ----
+const nivelLabel={admin:'Administrador',gestor:'Gestor',visualizador:'Visualizador'};
+const nivelCor={admin:'s-recebido',gestor:'s-aprovado',visualizador:'s-pendente'};
+
+function renderPerfis(){
+  const el=document.getElementById('lista-perfis');
+  if(!el)return;
+  if(!perfis.length){el.innerHTML='<p style="font-size:13px;color:var(--txt3);text-align:center;padding:1.5rem">Nenhum usuário cadastrado</p>';return;}
+  el.innerHTML=perfis.map((p,idx)=>`
+    <div class="card" style="padding:1rem">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--azul);color:var(--ouro);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0">
+          ${p.nome.trim().split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase()}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:14px;color:var(--txt)">${p.nome}</div>
+          <div style="font-size:12px;color:var(--txt2)">${p.cargo||''}${p.cargo&&p.email?' · ':''}${p.email||''}</div>
+        </div>
+        <span class="status ${nivelCor[p.nivel]||'s-pendente'}" style="flex-shrink:0">${nivelLabel[p.nivel]||p.nivel}</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:0.5px solid var(--border)">
+        <button class="btn-edit" onclick="editarPerfil(${idx})" style="flex:1;justify-content:center"><i class="ti ti-pencil" style="font-size:12px"></i> Editar</button>
+        <button class="btn-edit" onclick="excluirPerfil(${idx})" style="background:#FCEBEB;color:#791F1F;border-color:#f09595;flex:1;justify-content:center"><i class="ti ti-trash" style="font-size:12px"></i> Excluir</button>
+      </div>
+    </div>`).join('');
+
+  // Popular select de troca de senha
+  const sel=document.getElementById('senha-usuario');
+  if(sel) sel.innerHTML=perfis.map((p,i)=>`<option value="${i}">${p.nome}</option>`).join('');
+}
+
+function salvarPerfil(){
+  const nome=document.getElementById('pf-nome').value.trim();
+  const senha=document.getElementById('pf-senha').value;
+  const confirma=document.getElementById('pf-confirma').value;
+  const editIdx=document.getElementById('pf-edit-idx').value;
+
+  if(!nome){alert('Informe o nome do usuário.');return;}
+
+  // Só exige senha no cadastro novo
+  if(editIdx===''&&!senha){alert('Informe uma senha.');return;}
+  if(senha&&senha.length<4){alert('A senha deve ter pelo menos 4 caracteres.');return;}
+  if(senha&&senha!==confirma){alert('As senhas não coincidem.');return;}
+
+  const dados={
+    nome,
+    cargo:document.getElementById('pf-cargo').value,
+    email:document.getElementById('pf-email').value,
+    nivel:document.getElementById('pf-nivel').value,
+  };
+  if(senha) dados.senha=senha;
+
+  if(editIdx!==''){
+    perfis[parseInt(editIdx)]={...perfis[parseInt(editIdx)],...dados};
+    toast('Usuário atualizado!','edit');
+  } else {
+    perfis.push(dados);
+    toast('Usuário cadastrado!');
+  }
+  closeModal('modal-perfil');
+  ['pf-nome','pf-cargo','pf-email','pf-senha','pf-confirma'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pf-edit-idx').value='';
+  salvarLS();renderPerfis();
+}
+
+function editarPerfil(idx){
+  const p=perfis[idx];
+  if(!p)return;
+  document.getElementById('modal-perfil-titulo').textContent='Editar usuário';
+  document.getElementById('btn-salvar-perfil').innerHTML='<i class="ti ti-check"></i> Atualizar';
+  document.getElementById('pf-edit-idx').value=idx;
+  document.getElementById('pf-nome').value=p.nome||'';
+  document.getElementById('pf-cargo').value=p.cargo||'';
+  document.getElementById('pf-email').value=p.email||'';
+  document.getElementById('pf-nivel').value=p.nivel||'admin';
+  document.getElementById('pf-senha').value='';
+  document.getElementById('pf-confirma').value='';
+  openModal('modal-perfil');
+}
+
+function excluirPerfil(idx){
+  if(perfis.length<=1){alert('Deve existir ao menos um usuário no sistema.');return;}
+  if(!confirm(`Excluir o usuário "${perfis[idx].nome}"?`))return;
+  perfis.splice(idx,1);
+  salvarLS();renderPerfis();toast('Usuário excluído!');
+}
+
+function trocarSenha(){
+  const idxEl=document.getElementById('senha-usuario');
+  const idx=parseInt(idxEl.value);
+  const atual=document.getElementById('senha-atual').value;
+  const nova=document.getElementById('senha-nova').value;
+  const confirma=document.getElementById('senha-confirma').value;
+  const p=perfis[idx];
+  if(!p){alert('Selecione um usuário.');return;}
+  if(!atual||!nova||!confirma){alert('Preencha todos os campos.');return;}
+  if(p.senha&&p.senha!==atual){alert('Senha atual incorreta.');return;}
+  if(nova.length<4){alert('A nova senha deve ter pelo menos 4 caracteres.');return;}
+  if(nova!==confirma){alert('As senhas não coincidem.');return;}
+  perfis[idx].senha=nova;
+  ['senha-atual','senha-nova','senha-confirma'].forEach(id=>document.getElementById(id).value='');
+  salvarLS();toast('Senha atualizada com sucesso!');
+}
+
+// ---- CONFIGURAÇÕES GERAIS ----
+function salvarConfigGeral(){
+  try{
+    config.geral = {
+      empresa:{
+        nome: document.getElementById('cfg-empresa-nome')?.value||'',
+        cnpj: document.getElementById('cfg-empresa-cnpj')?.value||'',
+        tel:  document.getElementById('cfg-empresa-tel')?.value||'',
+        email:document.getElementById('cfg-empresa-email')?.value||'',
+        end:  document.getElementById('cfg-empresa-end')?.value||''
+      },
+      moeda:       document.getElementById('cfg-moeda')?.value||'BRL',
+      dataPadrao:  document.getElementById('cfg-data-padrao')?.value||'hoje',
+      statusPadrao:document.getElementById('cfg-status-padrao')?.value||'Pendente'
+    };
+    salvarLS();
+  }catch(e){}
+}
+
+function carregarConfigGeral(){
+  try{
+    const g=config.geral;
+    if(!g)return;
+    if(g.empresa){
+      ['nome','cnpj','tel','email','end'].forEach(k=>{
+        const el=document.getElementById('cfg-empresa-'+k);
+        if(el) el.value=g.empresa[k]||'';
+      });
+    }
+    if(g.moeda){ const el=document.getElementById('cfg-moeda'); if(el) el.value=g.moeda; }
+    if(g.dataPadrao){ const el=document.getElementById('cfg-data-padrao'); if(el) el.value=g.dataPadrao; }
+    if(g.statusPadrao){ const el=document.getElementById('cfg-status-padrao'); if(el) el.value=g.statusPadrao; }
+  }catch(e){}
+}
+
+function exportarDados(){
+  const payload=JSON.stringify({pedidos,fornecedores,materiais,obras,perfis,config,nextId},null,2);
+  const blob=new Blob([payload],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='wimol-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  toast('Backup exportado!');
+}
+
+function importarDados(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  if(!confirm('Importar este backup vai substituir TODOS os dados atuais. Deseja continuar?'))return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      pedidos      = d.pedidos      || [];
+      fornecedores = d.fornecedores || [];
+      materiais    = d.materiais    || [];
+      obras        = d.obras        || [];
+      perfis       = d.perfis       || DADOS_PADRAO.perfis;
+      if(d.config) config=d.config;
+      nextId       = d.nextId       || (pedidos.length+1);
+      salvarLS();renderAll();carregarConfigGeral();
+      toast('Backup importado com sucesso!');
+    }catch(err){ alert('Arquivo inválido. Use um backup exportado pelo Wimol Gestão.'); }
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+function resetarDados(){
+  if(!confirm('Resetar TODOS os dados do sistema?\n\nIsso apagará gastos, obras, fornecedores, materiais e configurações.\n\nEssa ação NÃO pode ser desfeita.'))return;
+  pedidos=DADOS_PADRAO.pedidos;fornecedores=DADOS_PADRAO.fornecedores;
+  materiais=DADOS_PADRAO.materiais;obras=DADOS_PADRAO.obras;
+  perfis=DADOS_PADRAO.perfis;
+  config={
+    categorias:{padrao:['Materiais','Equipamentos','Serviços','Elétrica','Hidráulica','Acabamento','Documentação','Terreno'],custom:[]},
+    tipos:{padrao:['Estrutural','Vedação','Revestimento','Cobertura','Instalação','Acabamento','Ferragem','Impermeabilização','Equipamento','Serviço'],custom:[]},
+    unidades:{padrao:['un','kg','t','m','m²','m³','sc','cx','l','rolo','hr'],custom:[]}
+  };
+  nextId=pedidos.length+1;
+  salvarLS();renderAll();carregarConfigGeral();
+  toast('Sistema resetado!');
+}
+
+function gerarPDF(){
+  showPage('relatorios');
+  const obra=obraFiltro();
+  const dt=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  document.getElementById('pdf-date').innerHTML=`<strong>Wimol Engenharia e Construções</strong><br>Gerado em ${dt}<br>${obra==='todas'?'Todas as obras':obra}`;
+  setTimeout(()=>window.print(),300);
+}
+inicializar();
+// Enter nos inputs de configuração
+const cfgMap={'cfg-cat-input':['categorias','cfg-cat-lista'],'cfg-tipo-input':['tipos','cfg-tipo-lista'],'cfg-un-input':['unidades','cfg-un-lista']};
+Object.entries(cfgMap).forEach(([id,[chave,lista]])=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('keydown',e=>{if(e.key==='Enter') adicionarItem(chave,id,lista);});
+});
+</script>
+</body>
+</html>
