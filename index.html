@@ -215,13 +215,6 @@ tr:hover td{background:var(--bg2)}
         </select>
       </div>
       <div class="filtro-group">
-        <label>Status</label>
-        <select id="f-status" onchange="aplicarFiltros()">
-          <option value="">Todos</option>
-          <option>Pendente</option><option>Aprovado</option><option>Recebido</option><option>Cancelado</option>
-        </select>
-      </div>
-      <div class="filtro-group">
         <label>Data início</label>
         <input id="f-dt-ini" type="date" onchange="aplicarFiltros()">
       </div>
@@ -241,7 +234,7 @@ tr:hover td{background:var(--bg2)}
     </div>
     <div class="card"><div class="tbl-wrap">
       <table>
-        <thead><tr><th>Nº</th><th>Obra</th><th>Fornecedor</th><th>Material</th><th>Categoria</th><th>Tipo</th><th>Qtd</th><th>Vl. Unit.</th><th>Vl. Total</th><th>Data</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Nº</th><th>Obra</th><th>Fornecedor</th><th>Material</th><th>Categoria</th><th>Tipo</th><th>Qtd</th><th>Vl. Unit.</th><th>Vl. Total</th><th>Data</th><th></th></tr></thead>
         <tbody id="tbody-pedidos"></tbody>
       </table>
     </div></div>
@@ -799,7 +792,6 @@ function renderPedidos(){
       <td style="color:var(--txt2)">${fmt(x.vl)}</td>
       <td style="font-weight:700;color:var(--azul)">${vtotal}</td>
       <td style="color:var(--txt2)">${fmtDt(x.dt)}</td>
-      <td><span class="status ${cl}" style="cursor:pointer" onclick="ciclarStatus(${x.id})" title="Clique para mudar status">${x.status}</span></td>
       <td style="white-space:nowrap">
         <div style="display:flex;align-items:center;gap:4px;opacity:0.4;transition:opacity .15s" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0.4">
           <button onclick="editarPedido(${x.id})" title="Editar" style="background:none;border:none;cursor:pointer;color:var(--azul2);font-size:15px;padding:2px 4px;border-radius:4px;line-height:1"><i class="ti ti-pencil"></i></button>
@@ -812,14 +804,12 @@ function renderPedidos(){
 function renderMetricasPedidos(){
   const p=getPedidosFiltrados();
   const total=p.reduce((a,x)=>a+x.qtd*x.vl,0);
-  const pend=p.filter(x=>x.status==='Pendente').length;
-  const aprov=p.filter(x=>x.status==='Aprovado').reduce((a,x)=>a+x.qtd*x.vl,0);
-  const rec=p.filter(x=>x.status==='Recebido').reduce((a,x)=>a+x.qtd*x.vl,0);
+  const porObra={};p.forEach(x=>{porObra[x.obra]=(porObra[x.obra]||0)+x.qtd*x.vl});
+  const maiorObra=Object.entries(porObra).sort((a,b)=>b[1]-a[1])[0];
   document.getElementById('metrics-pedidos').innerHTML=`
-    <div class="metric"><div class="metric-label">Total de gastos</div><div class="metric-value">${p.length}</div><div class="metric-sub">${pend} pendentes</div></div>
-    <div class="metric"><div class="metric-label">Valor total</div><div class="metric-value">${fmt(total)}</div><div class="metric-sub">todos os pedidos</div></div>
-    <div class="metric"><div class="metric-label">A entregar</div><div class="metric-value">${fmt(aprov)}</div><div class="metric-sub">aprovados</div></div>
-    <div class="metric"><div class="metric-label">Recebido</div><div class="metric-value">${fmt(rec)}</div><div class="metric-sub">confirmado</div></div>`;
+    <div class="metric"><div class="metric-label">Total de gastos</div><div class="metric-value">${p.length}</div><div class="metric-sub">registros</div></div>
+    <div class="metric"><div class="metric-label">Valor total</div><div class="metric-value">${fmt(total)}</div><div class="metric-sub">todos os gastos</div></div>
+    <div class="metric"><div class="metric-label">Maior obra</div><div class="metric-value" style="font-size:15px">${maiorObra?maiorObra[0]:'—'}</div><div class="metric-sub">${maiorObra?fmt(maiorObra[1]):''}</div></div>`;
 }
 
 function atualizarTotal(){
